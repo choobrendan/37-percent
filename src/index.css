@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: "Study Case";
+  src: local("Study Case"),
+   url("./fonts/Study Case.otf") format("opentype");
+  /* font-weight: bold; */
+ }
+ 
