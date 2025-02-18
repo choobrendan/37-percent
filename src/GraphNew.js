@@ -11,18 +11,26 @@ const GraphNew = ({
   onDoneComplete,
   listItemCount,
   setListItemCount,
-
+  global,
+  setGlobal,
+  reset,
+  changeCustom
 }) => {
   const hasRefreshed = useRef(false); // Track if the component has refreshed
-  const prevIndex = useRef(currentIndex)
+  const prevIndex = useRef(currentIndex);
+
+
+
   let listItems = [
     { message: "You date the first person", dateIndex: 0 },
     {
-      message: "Then you dump them and note your compatibility is " + dates[0] + "%",
+      message:
+        "Then you dump them and note your compatibility is " + dates[0] + "%",
       dateIndex: 0,
     },
     {
-      message: "You do the same for the 2nd person, noting them at " + dates[1] + "%",
+      message:
+        "You do the same for the 2nd person, noting them at " + dates[1] + "%",
       dateIndex: 1,
     },
     { message: "The 3rd date clocks in at " + dates[2] + "%", dateIndex: 1 },
@@ -41,7 +49,7 @@ const GraphNew = ({
     },
   ];
   for (let i = 5; i <= 10; i++) {
-    if (dates[i-1] < Math.max(...dates.slice(0, 4))){
+    if (dates[i - 1] < Math.max(...dates.slice(0, 4))) {
       listItems.push({
         message:
           "Person " +
@@ -51,33 +59,31 @@ const GraphNew = ({
           "%, lower than our threshold, so we reject them and move on.",
         dateIndex: 1,
       });
-    }
-    else  {
+    } else {
       listItems.push({
         message:
           "Cool! Person " +
           i +
           " is more compatible at " +
-          dates[i-1] +
+          dates[i - 1] +
           "%, so we ask them on a second date!",
         dateIndex: 1,
       });
-
-      if (Math.max(...dates.slice(i,10)) > dates[i]) {
+      if (Math.max(...dates.slice(i, 10)) > dates[i-1]) {
         listItems.push({
           message:
             "However, there was a better option with date number " +
-            (dates.indexOf(Math.max(...dates.slice(i + 1))) + 1) +
+            (dates.indexOf(Math.max(...dates.slice(i ))) + 1) +
             " being at " +
-            Math.max(...dates.slice(i + 1)) +
+            Math.max(...dates.slice(i )) +
             "%. \n It's fine though, you lost only " +
-            (Math.max(...dates.slice(i + 1)) - dates[i]) +
+            (Math.max(...dates.slice(i )) - dates[i-1]) +
             "%, not too bad!",
           dateIndex: 0,
         });
       }
       break;
-    } 
+    }
 
     if (i === 10) {
       listItems.push({
@@ -86,31 +92,38 @@ const GraphNew = ({
         dateIndex: 0,
       });
     }
-
   }
   // Use useEffect to update showBars after currentIndex changes
 
   useEffect(() => {
-    console.log(currentIndex,"CURRENT")
-    console.log(prevIndex.current,"PREV")
-    console.log(showBars,"show")
     setListItemCount(listItems.length);
 
     if (!hasRefreshed.current) {
       onRefreshComplete(); // Call refresh complete only once
       hasRefreshed.current = true; // Mark as refreshed
-      // Check if the currentIndex has increased or decreased
       if (currentIndex > prevIndex.current) {
-        setShowBars((prevShowBars) => prevShowBars + listItems[currentIndex].dateIndex);
-      } else if (currentIndex < prevIndex.current) {
-        setShowBars((prevShowBars) => prevShowBars - listItems[currentIndex].dateIndex);
+        if (currentIndex + 1 === listItems.length && Math.max(...dates.slice(showBars.bars, 10)) > dates[showBars.bars+1]) {
+          setShowBars((prevState) =>({ ...prevState,bars:10, skipped:true})
+  )} else {
+          setShowBars((prevState) => ({
+            ...prevState,
+            bars: prevState.bars + listItems[currentIndex].dateIndex,
+          }));
+        }
+      } else if (currentIndex < prevIndex.current ) {
+        if (showBars.skipped===true) {
+          setShowBars((prevState) =>({ ...prevState,bars: currentIndex-2, skipped:false}))
+        } else {
+          setShowBars((prevState) =>({ ...prevState,bars: prevState.bars - listItems[currentIndex + 1].dateIndex})
+
+          );
+        }
       }
+      
     }
 
-
     prevIndex.current = currentIndex;
-  }, [currentIndex]); 
-
+  }, [currentIndex]);
 
   const nextItem = () => {
     hasRefreshed.current = false; // Reset refresh flag
@@ -120,7 +133,9 @@ const GraphNew = ({
 
   const prevItem = () => {
     hasRefreshed.current = false; // Reset refresh flag
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + listItems.length) % listItems.length);
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + listItems.length) % listItems.length
+    );
     onDoneComplete(); // Call done complete
   };
 
@@ -148,6 +163,8 @@ const GraphNew = ({
   };
 
   return (
+
+    <div>
     <div
       className="carousel"
       style={{ display: "flex", width: "100%" }}
@@ -161,14 +178,32 @@ const GraphNew = ({
           justifyContent: "space-between",
         }}
       >
-        <button disabled={currentIndex===0} className="arrow" onClick={prevItem}>
+        <button
+          disabled={currentIndex === 0}
+          className="arrow"
+          onClick={prevItem}
+        >
           &lt;
         </button>
         <p>{listItems[currentIndex].message}</p>
-        <button disabled={(listItemCount-1)===currentIndex} className="arrow" onClick={nextItem}>
+        <button
+          disabled={listItemCount - 1 === currentIndex}
+          className="arrow"
+          onClick={nextItem}
+        >
           &gt;
         </button>
       </div>
+    </div>
+    { currentIndex+1===listItems.length && ( <div>
+      <button onClick={reset}>
+        <p>Let's try again!</p>
+      </button>
+      <button onClick={changeCustom}>
+        <p>Got it? <br></br>Let's do a custom simulation!</p>
+      </button>
+    </div>)}
+
     </div>
   );
 };

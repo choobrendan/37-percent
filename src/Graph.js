@@ -2,29 +2,75 @@ import React, { useState, useRef, useEffect } from "react";
 import GraphInit from "./GraphInit";
 import GraphVisuals from "./GraphVisuals";
 import GraphNew from "./GraphNew.js";
-
-const Graph = () => {
-  const [showBars, setShowBars] = useState(0);
+import GraphStats from "./GraphStats.js";
+const Graph = ({global,setGlobal}) => {
+  const [showBars, setShowBars] = useState({bars: 0, skipped: false });
   const [count, setCount] = useState(10);
   const [trying, setTrying] = useState(Math.ceil(count * 0.37));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isGraphNewReady, setIsGraphNewReady] = useState(false);
   const [listItemCount, setListItemCount] = useState(0);
-  // Initialize `dates` with useRef, so it won't get reset on re-renders.
-  const dates = useRef(Array.from({ length: count }, () => Math.floor(Math.random() * 100)));
+  const [lowerLimit, setLowerLimit] = useState(0);
+  const [upperLimit, setUpperLimit] = useState(100);
+  const [simulationResults, setSimulationResults] = useState([]);
+  const [isToggled, setIsToggled] = useState(false);
+    const [times, setTimes] = useState(100);
+  const getRandomDates = () => Array.from({ length: count }, () => Math.floor(Math.random() * (upperLimit - lowerLimit) + lowerLimit));
+
+  // Using useRef to store the dates array
+  let dates = useRef(getRandomDates());
+
+  const reset = () => {
+    dates.current = getRandomDates();
+
+    setCurrentIndex(0); 
+    setShowBars({bars: 0, skipped: false })
+  };
+const changeCustom=()=>{
+    setGlobal("CustomInit")
+    dates.current = getRandomDates();
+    setCurrentIndex(0); 
+    setShowBars({bars: 0, skipped: false })
+    setListItemCount(0)
+}
+const changeShow=()=>{
+  setGlobal("show")
+  dates.current = getRandomDates();
+  setCurrentIndex(0); 
+  setShowBars({bars: dates.current.length, skipped: false })
+  setListItemCount(0)
+}
   const handleGraphNewRefreshComplete = () => {
-    console.log("okok",showBars)
     setIsGraphNewReady(true);
   };
   const handleGraphNewLoadComplete = () => {
-    console.log("okok",showBars)
     setIsGraphNewReady(false);
   };
-  // // Optionally, update the value of `dates` if `count` changes.
-  // useEffect(() => {
-  //   dates.current = Array.from({ length: count }, () => Math.floor(Math.random() * 100));
-  // }, [count]);
+  const runSimulations = () => {
 
+    const results = [];
+    
+    for(let i = 0; i < times; i++) {
+      const dates = getRandomDates();
+      const tryingValues = dates.slice(0, trying);
+      const nonTryingValues = dates.slice(trying);
+      
+      const maxTrying = Math.max(...tryingValues);
+      const bestNonTrying = Math.max(...nonTryingValues);
+      
+      results.push({
+        maxTrying,
+        bestNonTrying,
+        improvement: bestNonTrying - maxTrying,
+        success: bestNonTrying > maxTrying
+      });
+    }
+    console.log(results)
+    setSimulationResults(results);
+  };
+  
+  // Call this when the "Let's do it!" button is clicked
+  // (modify your changeShow function accordingly)
   return (
     <div>
       <GraphInit
@@ -34,19 +80,38 @@ const Graph = () => {
         setTrying={setTrying}
         currentIndex={currentIndex}
         setCurrentIndex={setCurrentIndex}
+        global={global}
+        setGlobal={setGlobal}
+        changeShow={changeShow}
+        lowerLimit={lowerLimit}
+        setLowerLimit={setLowerLimit}
+        upperLimit={upperLimit}
+        setUpperLimit={setUpperLimit}
+        times={times}
+        setTimes={setTimes}
+        isToggled={isToggled}
+        setIsToggled={setIsToggled}
+        runSimulations ={runSimulations }
       ></GraphInit>
-      {isGraphNewReady && (
+      {(isGraphNewReady) && (global !=="CustomInit")&&(
         <GraphVisuals
           count={count}
           trying={trying}
           dates={dates.current}
           showBars={showBars}
           setShowBars={setShowBars}
+          currentIndex={currentIndex}
           listItemCount={listItemCount} setListItemCount={setListItemCount}
-          
+          global={global}
+          setGlobal={setGlobal}
+          lowerLimit={lowerLimit}
+          setLowerLimit={setLowerLimit}
+          upperLimit={upperLimit}
+          setUpperLimit={setUpperLimit}
+
         />
       )}
-
+    {((global==="init")|| (!isToggled)) && (
       <GraphNew
         dates={dates.current} 
         showBars={showBars}
@@ -56,7 +121,20 @@ const Graph = () => {
         onRefreshComplete={handleGraphNewRefreshComplete} 
         onDoneComplete={handleGraphNewLoadComplete} 
         listItemCount={listItemCount} setListItemCount={setListItemCount}
-      ></GraphNew>
+        global={global}
+        setGlobal={setGlobal}
+        reset={reset}
+        changeCustom={changeCustom}
+        changeShow={changeShow}
+      ></GraphNew>)
+    }
+{global === "show" && isToggled && (
+  <GraphStats 
+    simulations={simulationResults}
+    lowerLimit={lowerLimit}
+    upperLimit={upperLimit}
+  />
+)}
     </div>
   );
 };

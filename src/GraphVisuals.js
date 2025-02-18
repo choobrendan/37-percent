@@ -9,21 +9,22 @@ const GraphVisuals = ({
   currentIndex,
   showBars,
   listItemCount,
-  setListItemCount
+  setListItemCount,
+  global,
+  setGlobal,
 }) => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null); // Ref to store the chart instance
-console.log(showBars,"SHOWBARS")
-  // Register the annotation plugin
+
   Chart.register(annotationPlugin);
   useEffect(() => {
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
-    let visibleDates = new Array(10);
+    let visibleDates = new Array(count);
     visibleDates = [
-      ...dates.slice(0, showBars + 1),
-      ...visibleDates.slice(showBars, 9),
+      ...dates.slice(0, showBars.bars + 1),
+      ...visibleDates.slice(showBars.bars, count - 1),
     ];
 
     const ctx = chartRef.current.getContext("2d");
@@ -37,29 +38,29 @@ console.log(showBars,"SHOWBARS")
 
     // Calculate the highest value in the first "trying" elements (if visible)
     const tryingValues = dates.slice(0, trying);
-    const maxTryingValue =
-      Math.max(...tryingValues);
+    const maxTryingValue = Math.max(...tryingValues);
 
     // Calculate the highest value in the remaining elements (if visible)
     const nonTryingValues = dates.slice(trying);
-    const maxNonTryingValue =
-    nonTryingValues.find(
-        (value) => value > maxTryingValue
-      );
-    // Find the first value in nonTryingValues that is higher than maxTryingValue (if it exists)
-    let firstBestNonTryingValue=null
-    if(maxNonTryingValue!=null){
-        let x=Math.max(...nonTryingValues.slice(((nonTryingValues.indexOf(maxNonTryingValue))+1),nonTryingValues.length))
+    const maxNonTryingValue = nonTryingValues.find(
+      (value) => value > maxTryingValue
+    );
 
-     x>maxNonTryingValue ? firstBestNonTryingValue= x :firstBestNonTryingValue= null 
+    // Find the first value in nonTryingValues that is higher than maxTryingValue (if it exists)
+    let firstBestNonTryingValue = null;
+    if (maxNonTryingValue != null) {
+      let x = Math.max(
+        ...nonTryingValues.slice(
+          nonTryingValues.indexOf(maxNonTryingValue) + 1,
+          nonTryingValues.length
+        )
+      );
+
+      x > maxNonTryingValue
+        ? (firstBestNonTryingValue = x)
+        : (firstBestNonTryingValue = null);
     }
 
-
-
-    console.log(nonTryingValues,"max" )
-    console.log(maxNonTryingValue,"maxNon" )
-    console.log(dates)
-    console.log(firstBestNonTryingValue,"non")
     // Create a new chart instance
     chartInstance.current = new Chart(ctx, {
       type: "bar",
@@ -93,30 +94,40 @@ console.log(showBars,"SHOWBARS")
           // Add annotations for the highest values
           annotation: {
             annotations: {
-              ...(currentIndex >= 5 &&
-                maxTryingValue !== null && {
-                  maxTryingLine: {
-                    type: "line",
-                    yMin: maxTryingValue,
-                    yMax: maxTryingValue,
-                    borderColor: "red",
-                    borderWidth: 2,
-                    borderDash: [5, 5], // Dashed line
-                    label: {
-                      content: `Max Trying: ${maxTryingValue}`,
-                      enabled: true,
-                      position: "end",
-                      backgroundColor: "red",
-                      color: "white",
-                      font: {
-                        size: 12,
-                        weight: "bold",
-                      },
+              ...(((currentIndex >= 5 &&
+                maxTryingValue !== null &&
+                global === "init") ||
+                global === "show") && {
+                maxTryingLine: {
+                  type: "line",
+                  yMin: maxTryingValue,
+                  yMax: maxTryingValue,
+                  borderColor: "red",
+                  borderWidth: 2,
+                  borderDash: [5, 5], // Dashed line
+                  label: {
+                    content: `Max Trying: ${maxTryingValue}`,
+                    enabled: true,
+                    position: "end",
+                    backgroundColor: "red",
+                    color: "white",
+                    font: {
+                      size: 12,
+                      weight: "bold",
                     },
                   },
-                }),
-                
-              ...(currentIndex>=(dates.indexOf(Math.max(...nonTryingValues)))+2&& maxNonTryingValue !== null && {
+                },
+              }),
+
+              ...(((((currentIndex >=
+                dates.indexOf(Math.max(maxNonTryingValue)) + 2 &&
+                maxNonTryingValue !== null &&
+                maxNonTryingValue !== undefined) ||
+                showBars.skipped === true) &&
+                global === "init") ||
+                (global === "show" &&
+                  maxNonTryingValue !== null &&
+                  maxNonTryingValue !== undefined)) && {
                 maxNonTryingLine: {
                   type: "line",
                   yMin: maxNonTryingValue,
@@ -137,12 +148,17 @@ console.log(showBars,"SHOWBARS")
                   },
                 },
               }),
-              ...(currentIndex===listItemCount && firstBestNonTryingValue && {
+              ...(((showBars.skipped === true &&
+                firstBestNonTryingValue !== undefined &&
+                global === "init") ||
+                (global === "show" &&
+                  firstBestNonTryingValue !== undefined &&
+                  firstBestNonTryingValue !== null)) && {
                 firstBestNonTryingLine: {
                   type: "line",
                   yMin: firstBestNonTryingValue,
                   yMax: firstBestNonTryingValue,
-                  borderColor: "green",
+                  borderColor: "light green",
                   borderWidth: 2,
                   borderDash: [5, 5], // Dashed line
                   label: {
@@ -197,14 +213,81 @@ console.log(showBars,"SHOWBARS")
     return () => {
       if (chartInstance.current) {
         chartInstance.current.destroy();
-        
       }
     };
-  }, [count, trying, dates, currentIndex]); // Re-run effect when "count", "trying", "dates", or "currentIndex" changes
+  }, [dates, currentIndex]); // Re-run effect when "count", "trying", "dates", or "currentIndex" changes
 
   return (
-    <div style={{ height: "300px", maxWidth: "50%", minWidth: "300px" }}>
-      <canvas ref={chartRef}></canvas>
+    <div>
+      <div style={{ height: "300px", maxWidth: "50%", minWidth: "300px" }}>
+        <canvas ref={chartRef}></canvas>
+      </div>
+      {global === "show" && (
+        <div>
+          <p>
+            Person{" "}
+            {dates
+              .slice(0, trying)
+              .indexOf(Math.max(...dates.slice(0, trying))) + 1}{" "}
+            is the highest for the trying stage at{" "}
+            {Math.max(...dates.slice(0, trying))}%.
+          </p>
+          {Math.max(...dates.slice(trying)) >=
+            Math.max(...dates.slice(0, trying)) && (
+            <p>
+              There is a date that we picked immediately, with
+              person{" "}
+              {dates
+                .slice(trying)
+                .indexOf(
+                  dates
+                    .slice(trying)
+                    .find(
+                      (value) => value > Math.max(...dates.slice(0, trying))
+                    )
+                ) +
+                trying +
+                1}{" "}
+              at{" "}
+              {
+                  dates
+                    .slice(trying)
+                    .find(
+                      (value) => value > Math.max(...dates.slice(0, trying))
+                    )
+              }
+              %.
+            </p>
+          )}
+          {Math.max(...dates.slice(trying)) >
+            dates
+            .slice(trying)
+            .find(
+              (value) => value > Math.max(...dates.slice(0, trying))
+            ) && (
+            <p>
+              However, there was a better option at person {" "}
+              {dates
+                .slice(trying)
+                .indexOf(
+                  Math.max(...dates.slice(trying))
+                ) +
+                trying +
+                1}{" "}
+              at{" "}
+              {
+                  Math.max(...dates.slice(trying))
+              }
+              %, missing out on {Math.max(...dates.slice(trying))-Math.max(...dates.slice(trying)) >
+            dates
+            .slice(trying)
+            .find(
+              (value) => value > Math.max(...dates.slice(0, trying))
+            )}%
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 };
