@@ -278,12 +278,7 @@ const GraphVisuals = ({
               {
                   Math.max(...dates.slice(trying))
               }
-              %, missing out on {Math.max(...dates.slice(trying))-Math.max(...dates.slice(trying)) >
-            dates
-            .slice(trying)
-            .find(
-              (value) => value > Math.max(...dates.slice(0, trying))
-            )}%
+              %.
             </p>
           )}
         </div>

@@ -163,48 +163,51 @@ const GraphNew = ({
   };
 
   return (
-
     <div>
+{global === "init"&&(
+  <div>
+  <div
+    className="carousel"
+    style={{ display: "flex", width: "100%" }}
+    onTouchStart={handleSwipe} // For swipe event
+  >
     <div
-      className="carousel"
-      style={{ display: "flex", width: "100%" }}
-      onTouchStart={handleSwipe} // For swipe event
+      className="carousel-controls"
+      style={{
+        display: "flex",
+        width: "100%",
+        justifyContent: "space-between",
+      }}
     >
-      <div
-        className="carousel-controls"
-        style={{
-          display: "flex",
-          width: "100%",
-          justifyContent: "space-between",
-        }}
+      <button
+        disabled={currentIndex === 0}
+        className="arrow"
+        onClick={prevItem}
       >
-        <button
-          disabled={currentIndex === 0}
-          className="arrow"
-          onClick={prevItem}
-        >
-          &lt;
-        </button>
-        <p>{listItems[currentIndex].message}</p>
-        <button
-          disabled={listItemCount - 1 === currentIndex}
-          className="arrow"
-          onClick={nextItem}
-        >
-          &gt;
-        </button>
-      </div>
+        &lt;
+      </button>
+      <p>{listItems[currentIndex].message}</p>
+      <button
+        disabled={listItemCount - 1 === currentIndex}
+        className="arrow"
+        onClick={nextItem}
+      >
+        &gt;
+      </button>
     </div>
-    { currentIndex+1===listItems.length && ( <div>
-      <button onClick={reset}>
-        <p>Let's try again!</p>
-      </button>
-      <button onClick={changeCustom}>
-        <p>Got it? <br></br>Let's do a custom simulation!</p>
-      </button>
-    </div>)}
+  </div>
+  { currentIndex+1===listItems.length && ( <div>
+    <button onClick={reset}>
+      <p>Let's try again!</p>
+    </button>
+    <button onClick={changeCustom}>
+      <p>Got it? <br></br>Let's do a custom simulation!</p>
+    </button>
+  </div>)}
 
-    </div>
+  </div>
+)}
+</div>
   );
 };
 

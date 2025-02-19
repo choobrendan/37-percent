@@ -3,16 +3,31 @@ import "./App.css";
 import Graph from "./Graph";
 import Home from "./Home";
 import Love from "./Love";
-import { useState } from "react";
+import However from "./However";
+import { useState,useEffect } from "react";
 
 function App() {
-const [global,setGlobal]=useState("init")
+  const [global, setGlobal] = useState("1");
+  const [type, setType] = useState("");
+  useEffect(() => {
+
+console.log(type)
+
+  }, [type]);
+
   return (
     <div className="App">
       <h1>The 37%</h1>
-      {/* <Home></Home> */}
-      {/* <Love></Love> */}
-            <Graph 
+      {type==="" && (
+      <Home global={global} setGlobal={setGlobal} type={type} setType={setType}></Home>
+      )}
+      {type.includes("love") && (
+        <Love global={global} setGlobal={setGlobal} type={type} setType={setType}></Love>
+      )}
+      {global==="2"&&(
+      <However global={global} setGlobal={setGlobal} type={type} setType={setType} ></However>
+      )}
+<Graph 
               global={global}
               setGlobal={setGlobal}
             ></Graph>

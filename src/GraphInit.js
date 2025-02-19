@@ -19,7 +19,8 @@ const GraphInit = ({
   setIsToggled,
   times,
   setTimes,
-  runSimulations 
+  runSimulations,
+   changeStats
 }) => {
 
 
@@ -285,6 +286,7 @@ const GraphInit = ({
     changeShow();
   }
   else{
+    changeStats();
   runSimulations();
   }
 }}>Let's do it!</button>

@@ -1,63 +1,104 @@
 import React, { useRef, useEffect } from "react";
-import Chart from 'chart.js/auto';
+import Chart from "chart.js/auto";
 
 const GraphStats = ({ simulations, lowerLimit, upperLimit }) => {
-    console.log(simulations)
   // Calculate statistics
-  const successes = simulations.filter(sim => sim.bestNonTrying > sim.maxTrying).length;
+  const successes = simulations.filter((sim) => sim.bestNonTrying > sim.maxTrying).length;
   const successRate = (successes / simulations.length * 100).toFixed(1);
-  
-  const tryingValues = simulations.map(sim => sim.maxTrying);
+
+  const tryingValues = simulations.map((sim) => sim.maxTrying);
   const avgTrying = (tryingValues.reduce((a, b) => a + b, 0) / simulations.length).toFixed(1);
-  
-  const nonTryingValues = simulations.map(sim => sim.bestNonTrying);
+
+  const nonTryingValues = simulations.map((sim) => sim.bestNonTrying);
   const avgNonTrying = (nonTryingValues.reduce((a, b) => a + b, 0) / simulations.length).toFixed(1);
-  
-  const improvements = simulations.map(sim => sim.bestNonTrying - sim.maxTrying)
-                            .filter(imp => imp > 0);
-  const avgImprovement = improvements.length > 0 
-    ? (improvements.reduce((a, b) => a + b, 0) / improvements.length).toFixed(1)
-    : 0;
-    const chartRef = useRef(null);
+
+  const improvements = simulations
+    .map((sim) => sim.bestNonTrying - sim.maxTrying)
+    .filter((imp) => imp > 0);
+  const avgImprovement =
+    improvements.length > 0
+      ? (improvements.reduce((a, b) => a + b, 0) / improvements.length).toFixed(1)
+      : 0;
+
   // Create histogram data
-  const createHistogram = (values, label) => {
-    
+  const createHistogram = (values1, values2, label1, label2, canvasRef) => {
+    if (!canvasRef.current) return;
 
-      if (!chartRef.current) return;
-      
-      const ctx = chartRef.current.getContext('2d');
-      const ranges = Array.from({length: 10}, (_, i) => ({
-        min: lowerLimit + i*(upperLimit - lowerLimit)/10,
-        max: lowerLimit + (i+1)*(upperLimit - lowerLimit)/10
-      }));
-      
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ranges.map(r => `${Math.floor(r.min)}-${Math.floor(r.max)}`),
-          datasets: [{
-            label: label,
-            data: ranges.map(range => 
-              values.filter(v => v >= range.min && v < range.max).length
-            ),
-            backgroundColor: 'rgba(54, 162, 235, 0.6)'
-          }]
+    // Clean up previous chart if it exists
+    const previousChart = Chart.getChart(canvasRef.current);
+    if (previousChart) {
+      previousChart.destroy();
+    }
+
+    const ctx = canvasRef.current.getContext("2d");
+
+    // Generate histogram data for both datasets
+    const histogramData1 = Array(upperLimit + 1 - lowerLimit).fill(0);
+    const histogramData2 = Array(upperLimit + 1 - lowerLimit).fill(0);
+
+    values1.forEach(value => {
+      if (value >= lowerLimit && value <= upperLimit) {
+        histogramData1[value - lowerLimit]++;
+      }
+    });
+
+    values2.forEach(value => {
+      if (value >= lowerLimit && value <= upperLimit) {
+        histogramData2[value - lowerLimit]++;
+      }
+    });
+
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: Array.from({ length: upperLimit + 1 - lowerLimit }, (_, idx) => idx + lowerLimit),
+        datasets: [
+          {
+            label: label1,
+            data: histogramData1,
+            backgroundColor: "rgba(255, 99, 132, 0.6)", // Red for bestNonTrying
+            borderColor: "rgba(255, 99, 132, 1)",
+            borderWidth: 1,
+          },
+          {
+            label: label2,
+            data: histogramData2,
+            backgroundColor: "rgba(54, 162, 235, 0.6)", // Blue for maxTrying
+            borderColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        scales: {
+          y: { beginAtZero: true },
         },
-        options: {
-          scales: {
-            y: { beginAtZero: true }
-          }
-        }
-      });
-
-
-    return <canvas ref={chartRef} />;
+      },
+    });
   };
+
+  // Refs for histograms
+  const comparisonHistogramRef = useRef(null);
+
+  useEffect(() => {
+    // Initialize the combined chart for Trial and Post-Trial Maximum comparison
+    createHistogram(tryingValues, nonTryingValues, "Trial Phase Maximum", "Post-Trial Maximum", comparisonHistogramRef);
+
+    // Cleanup charts on component unmount or when the data changes
+    return () => {
+      if (comparisonHistogramRef.current) {
+        const chartInstance = Chart.getChart(comparisonHistogramRef.current);
+        if (chartInstance) {
+          chartInstance.destroy();
+        }
+      }
+    };
+  }, [simulations, lowerLimit, upperLimit]); // Re-run when simulations or limits change
 
   return (
     <div className="simulation-stats">
       <h2>Simulation Results ({simulations.length} runs)</h2>
-      
+<div style={{display:"flex"}}>
       <div className="stats-grid">
         <div className="stat-box">
           <h3>Success Rate</h3>
@@ -84,16 +125,12 @@ const GraphStats = ({ simulations, lowerLimit, upperLimit }) => {
         </div>
       </div>
 
-      <div className="histograms">
+      <div style={{ height:"300px"}}className="histograms">
         <div className="histogram">
-          <h3>Trial Phase Maximum Distribution</h3>
-          {createHistogram(tryingValues, 'Trial Phase Maximum')}
+          <h3>Trial vs Post-Trial Maximum Distribution</h3>
+          <canvas ref={comparisonHistogramRef} />
         </div>
-        
-        <div className="histogram">
-          <h3>Post-Trial Maximum Distribution</h3>
-          {createHistogram(nonTryingValues, 'Post-Trial Maximum')}
-        </div>
+      </div>
       </div>
     </div>
   );

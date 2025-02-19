@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 
-const Explanation = () => {
+const Explanation = ({dateList}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const listItems = [
-    "Test out the first 37% options",
+    "Test out the first 37% options. (10*37%≈4)",
     "Reject these options and note the best so far",
-    "Continue choosing until an option is better than the first 37%!"
+    "Continue choosing until an option is better than the first 37%! (we date person no.7)"
   ];
 
   // Next item in the carousel
@@ -46,9 +46,104 @@ const Explanation = () => {
 
   return (
     <div
-      className="carousel" style={{display:"flex",width:"100%"}}
+      className="carousel" style={{display:"flex",width:"100%",flexDirection:"column"}}
       onTouchStart={handleSwipe} // For swipe event
     >
+      <div>
+      {currentIndex===0&&( <div
+  style={{
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "10px",
+    alignItems: "center",
+    justifyContent: "center",
+  }}
+>
+  {dateList
+    .map((index, i) => (
+<div
+  key={index}
+  style={{
+    flex: "0 0 18%",
+    textAlign: "center",
+    // Adjusting opacity based on `i` (you can enable it if needed)
+    // opacity: i >= 4 ? 0.25 : 1,
+    filter: i < 4 
+      ? "invert(46%) sepia(15%) saturate(3224%) hue-rotate(323deg) brightness(88%) contrast(106%)"
+      : "invert(50%) sepia(91%) saturate(434%) hue-rotate(165deg) brightness(89%) contrast(91%)",
+  }}
+>
+        <img
+          style={{ height: "100px", width: "100px" }}
+          src={require(`./images/guy/guy-${index}.png`)}
+          alt={`guy-${index}`}
+        />
+      </div>
+    ))}
+</div>)}
+{currentIndex===1&&( <div
+  style={{
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "10px",
+    alignItems: "center",
+    justifyContent: "center",
+  }}
+>
+  {dateList
+    .map((index, i) => (
+      <div
+  key={index}
+  style={{
+    flex: "0 0 18%",
+    textAlign: "center",
+    // Adjusting opacity based on `i` (you can enable it if needed)
+    opacity: i >= 4 || i===2 ? 1 : 0.2,
+    filter: i < 4 
+      ? "invert(46%) sepia(15%) saturate(3224%) hue-rotate(323deg) brightness(88%) contrast(106%)"
+      : "invert(50%) sepia(91%) saturate(434%) hue-rotate(165deg) brightness(89%) contrast(91%)",
+  }}
+>
+        <img
+          style={{ height: "100px", width: "100px" }}
+          src={require(`./images/guy/guy-${index}.png`)}
+          alt={`guy-${index}`}
+        />
+      </div>
+    ))}
+</div>)}
+{currentIndex===2&&( <div
+  style={{
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "10px",
+    alignItems: "center",
+    justifyContent: "center",
+  }}
+>
+  {dateList
+    .map((index, i) => (
+      <div
+  key={index}
+  style={{
+    flex: "0 0 18%",
+    textAlign: "center",
+    // Adjusting opacity based on `i` (you can enable it if needed)
+    opacity: (i === 2 || i === 6) ? 1 : 0.2,
+    filter: i < 4 
+      ? "invert(46%) sepia(15%) saturate(3224%) hue-rotate(323deg) brightness(88%) contrast(106%)"
+      : "invert(50%) sepia(91%) saturate(434%) hue-rotate(165deg) brightness(89%) contrast(91%)",
+  }}
+>
+        <img
+          style={{ height: "100px", width: "100px" }}
+          src={require(`./images/guy/guy-${index}.png`)}
+          alt={`guy-${index}`}
+        />
+      </div>
+    ))}
+</div>)}
+      </div>
         <div className="carousel-controls" style={{display:"flex",width:"100%", justifyContent:"space-between"}}>
           <button onClick={prevItem}>←</button>
           <p>{listItems[currentIndex]}</p>
