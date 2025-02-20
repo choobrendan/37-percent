@@ -20,7 +20,8 @@ const GraphInit = ({
   times,
   setTimes,
   runSimulations,
-   changeStats
+   changeStats,
+   setIsGraphNewReady
 }) => {
 
 
@@ -117,7 +118,7 @@ const GraphInit = ({
 
   return (
     <div>
-      <div style={{ display: "flex", flexDirection: "row" }}>
+      <div style={{ display: "flex", flexDirection: "row", width:"500px",justifyContent:" space-between" }}>
         <div
           style={{
             display: "flex",
@@ -129,16 +130,16 @@ const GraphInit = ({
             style={{
               textAlign: "center",
               display: "flex",
-              alignItems: "center",
+              alignItems: "center",height: "100px"
             }}
           >
-            <div style={{ display: "flex" }}>
+            <div style={{ display: "flex" ,}}>
               <p>I want to try </p>
             </div>
             <div style={{ marginLeft: "5px", marginRight: "5px" }}>
               <button
                 className="arrow"
-                style={{ fontSize: "32px", position: "relative", top: "12px" }}
+                style={{ fontSize: "32px", position: "relative", top: "24px" }}
                 onClick={increaseCount}
                 disabled={count >= maxCount}
               >
@@ -151,7 +152,7 @@ const GraphInit = ({
                 style={{
                   fontSize: "30px",
                   position: "relative",
-                  bottom: "16px",
+                  bottom: "28px",
                 }}
                 onClick={decreaseCount}
                 disabled={count <= minCount}
@@ -172,7 +173,7 @@ const GraphInit = ({
         <div style={boxStyle}>{circles}</div>
       </div>
       <div
-        style={{ display: "flex", alignItems: "center", paddingTop: "20px" }}
+        style={{ display: "flex", alignItems: "center", paddingTop: "10px" }}
       >
         <p>I want to the range to be between</p>
         <label style={{ paddingLeft: "10px" }}>
@@ -219,12 +220,12 @@ const GraphInit = ({
             alignItems: "center",
             justifyContent: " space-between",
             minHeight: "60px",
-            paddingTop: "20px",
+            paddingTop: "10px",
           }}
         >
-          <div>
+          <div style={{width:"350px"}}>
             {isToggled ? (
-              <p>I want to see one simulation with its results</p>
+              <p>I want to see 1 simulation with its results</p>
             ) : (
               <div
                 style={{
@@ -275,15 +276,11 @@ const GraphInit = ({
               }
             />
           </label>
-        </div>
-      </div>
-      <div
-        style={{ display: "flex", justifyContent: "center", padding: "20px" }}
-      >
-        <div>
+          <div>
         <button onClick={() => { 
   if (isToggled) {
     changeShow();
+    setIsGraphNewReady(true);
   }
   else{
     changeStats();
@@ -291,6 +288,13 @@ const GraphInit = ({
   }
 }}>Let's do it!</button>
         </div>
+        </div>
+        
+      </div>
+      <div
+        style={{ display: "flex", justifyContent: "center", padding: "0px" }}
+      >
+        
       </div>
     </div>
   );

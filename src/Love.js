@@ -6,12 +6,12 @@ const Love = ({ global, setGlobal, type, setType }) => {
 
 
   return (
-    <div>
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center", width:"500px"}}>
       <p>Interesting! Who are you looking for?</p>
       <div style={{display:"flex", alignItems:"center",justifyContent:"center"}}>
         <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}} >
           <img src={require(`.//images/guy/guy-${ Math.floor(Math.random() * 10)}.png`)} alt="haha "></img>
-          <button 
+          <button style={{width:"100px"}}
             onClick={() => {
               setType("guy");
               setGlobal("2");
@@ -23,7 +23,7 @@ const Love = ({ global, setGlobal, type, setType }) => {
         </div>
         <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}} >
           <img src={require(".//images/girl/girl.png")} alt="haha "></img>
-          <button 
+          <button style={{width:"100px"}}
             onClick={() => {
               setType("girl");
               setGlobal("2");
@@ -35,7 +35,7 @@ const Love = ({ global, setGlobal, type, setType }) => {
         </div>
         <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}} >
           <img src={require(".//images/both/both.png")} alt="haha "></img>
-          <button 
+          <button style={{width:"100px"}}
             onClick={() => {
               setType("both");
               setGlobal("2");

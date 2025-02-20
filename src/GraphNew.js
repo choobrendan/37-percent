@@ -168,16 +168,12 @@ const GraphNew = ({
   <div>
   <div
     className="carousel"
-    style={{ display: "flex", width: "100%" }}
+    style={{ display: "flex", width: "100%" ,justifyContent:"center"}}
     onTouchStart={handleSwipe} // For swipe event
   >
     <div
       className="carousel-controls"
-      style={{
-        display: "flex",
-        width: "100%",
-        justifyContent: "space-between",
-      }}
+      style={{display:"flex",width:"500px", alignItems:"center",justifyContent:"space-between",textAlign:"center"}}
     >
       <button
         disabled={currentIndex === 0}
@@ -196,11 +192,11 @@ const GraphNew = ({
       </button>
     </div>
   </div>
-  { currentIndex+1===listItems.length && ( <div>
-    <button onClick={reset}>
+  { currentIndex+1===listItems.length && ( <div style={{display:"flex",width:"100%", alignItems:"center",justifyContent:"space-around",textAlign:"center"}}>
+    <button style={{width:"300px",height:"75px"}} onClick={reset}>
       <p>Let's try again!</p>
     </button>
-    <button onClick={changeCustom}>
+    <button style={{width:"300px",height:"75px"}} onClick={changeCustom}>
       <p>Got it? <br></br>Let's do a custom simulation!</p>
     </button>
   </div>)}

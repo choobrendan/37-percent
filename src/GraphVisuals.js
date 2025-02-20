@@ -218,7 +218,7 @@ const GraphVisuals = ({
   }, [dates, currentIndex]); // Re-run effect when "count", "trying", "dates", or "currentIndex" changes
 
   return (
-    <div>
+    <div style={{ maxWidth: "500px" }}>
       <div style={{ height: "300px", maxWidth: "50%", minWidth: "300px" }}>
         <canvas ref={chartRef}></canvas>
       </div>

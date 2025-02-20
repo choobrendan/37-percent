@@ -17,10 +17,17 @@ const Graph = ({ global, setGlobal }) => {
   const [simulationResults, setSimulationResults] = useState([]);
   const [isToggled, setIsToggled] = useState(false);
   const [times, setTimes] = useState(100);
-  const getRandomDates = () =>
-    Array.from({ length: count }, () =>
-      Math.floor(Math.random() * (upperLimit - lowerLimit) + lowerLimit)
-    );
+  const getRandomDates = (count, lowerLimit, upperLimit) => {
+    const uniqueNumbers = new Set();
+  
+    while (uniqueNumbers.size < count) {
+      const randomNumber = Math.floor(Math.random() * (upperLimit - lowerLimit) + lowerLimit);
+      uniqueNumbers.add(randomNumber);
+    }
+  
+    return Array.from(uniqueNumbers);
+  };
+
   const getSeq = () =>
     Array.from({ length: 10 }, (_, index) => index).sort(
       () => Math.random() - 0.5
@@ -28,31 +35,31 @@ const Graph = ({ global, setGlobal }) => {
   let rand = useRef(getSeq());
   console.log(rand);
   // Using useRef to store the dates array
-  let dates = useRef(getRandomDates());
-
+  let dates = useRef(getRandomDates(count, lowerLimit, upperLimit));
+  console.log(dates)
   const reset = () => {
-    dates.current = getRandomDates();
+    dates.current = getRandomDates(count, lowerLimit, upperLimit);
 
     setCurrentIndex(0);
     setShowBars({ bars: 0, skipped: false });
   };
   const changeCustom = () => {
     setGlobal("CustomInit");
-    dates.current = getRandomDates();
+    dates.current = getRandomDates(count, lowerLimit, upperLimit);
     setCurrentIndex(0);
     setShowBars({ bars: 0, skipped: false });
     setListItemCount(0);
   };
   const changeShow = () => {
     setGlobal("show");
-    dates.current = getRandomDates();
+    dates.current = getRandomDates(count, lowerLimit, upperLimit);
     setCurrentIndex(0);
     setShowBars({ bars: dates.current.length, skipped: false });
     setListItemCount(0);
   };
   const changeStats = () => {
     setGlobal("Stats");
-    dates.current = getRandomDates();
+    dates.current = getRandomDates(count, lowerLimit, upperLimit);
     setCurrentIndex(0);
     setShowBars({ bars: dates.current.length, skipped: false });
     setListItemCount(0);
@@ -67,7 +74,7 @@ const Graph = ({ global, setGlobal }) => {
     const results = [];
 
     for (let i = 0; i < times; i++) {
-      const dates = getRandomDates();
+      const dates = getRandomDates(count, lowerLimit, upperLimit);
       const tryingValues = dates.slice(0, trying);
       const nonTryingValues = dates.slice(trying);
 
@@ -111,8 +118,10 @@ const Graph = ({ global, setGlobal }) => {
           setIsToggled={setIsToggled}
           runSimulations={runSimulations}
           changeStats={changeStats}
+          setIsGraphNewReady={setIsGraphNewReady}
         ></GraphInit>
       )}
+      <div style={{display:"flex",alignItems: "flex-end"}}>
       {isGraphNewReady && global !== "CustomInit" && global !== "Stats" && (
         <GraphVisuals
           count={count}
@@ -131,7 +140,8 @@ const Graph = ({ global, setGlobal }) => {
           setUpperLimit={setUpperLimit}
         />
       )}
-      <GraphPictures currentIndex={currentIndex} rand={rand} dates={dates.current} />
+      {isGraphNewReady && global === "init" &&(<GraphPictures currentIndex={currentIndex} rand={rand} dates={dates.current} showBars={showBars} />)}
+      </div>
       {global === "init" && (
         <GraphNew
           dates={dates.current}

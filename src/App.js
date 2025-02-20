@@ -16,7 +16,7 @@ console.log(type)
   }, [type]);
 
   return (
-    <div className="App">
+    <div className="App" > 
       <h1>The 37%</h1>
       {type==="" && (
       <Home global={global} setGlobal={setGlobal} type={type} setType={setType}></Home>

@@ -3,21 +3,29 @@ import Chart from "chart.js/auto";
 
 const GraphStats = ({ simulations, lowerLimit, upperLimit }) => {
   // Calculate statistics
-  const successes = simulations.filter((sim) => sim.bestNonTrying > sim.maxTrying).length;
-  const successRate = (successes / simulations.length * 100).toFixed(1);
+  const successes = simulations.filter(
+    (sim) => sim.bestNonTrying > sim.maxTrying
+  ).length;
+  const successRate = ((successes / simulations.length) * 100).toFixed(1);
 
   const tryingValues = simulations.map((sim) => sim.maxTrying);
-  const avgTrying = (tryingValues.reduce((a, b) => a + b, 0) / simulations.length).toFixed(1);
+  const avgTrying = (
+    tryingValues.reduce((a, b) => a + b, 0) / simulations.length
+  ).toFixed(1);
 
   const nonTryingValues = simulations.map((sim) => sim.bestNonTrying);
-  const avgNonTrying = (nonTryingValues.reduce((a, b) => a + b, 0) / simulations.length).toFixed(1);
+  const avgNonTrying = (
+    nonTryingValues.reduce((a, b) => a + b, 0) / simulations.length
+  ).toFixed(1);
 
   const improvements = simulations
     .map((sim) => sim.bestNonTrying - sim.maxTrying)
     .filter((imp) => imp > 0);
   const avgImprovement =
     improvements.length > 0
-      ? (improvements.reduce((a, b) => a + b, 0) / improvements.length).toFixed(1)
+      ? (improvements.reduce((a, b) => a + b, 0) / improvements.length).toFixed(
+          1
+        )
       : 0;
 
   // Create histogram data
@@ -36,13 +44,13 @@ const GraphStats = ({ simulations, lowerLimit, upperLimit }) => {
     const histogramData1 = Array(upperLimit + 1 - lowerLimit).fill(0);
     const histogramData2 = Array(upperLimit + 1 - lowerLimit).fill(0);
 
-    values1.forEach(value => {
+    values1.forEach((value) => {
       if (value >= lowerLimit && value <= upperLimit) {
         histogramData1[value - lowerLimit]++;
       }
     });
 
-    values2.forEach(value => {
+    values2.forEach((value) => {
       if (value >= lowerLimit && value <= upperLimit) {
         histogramData2[value - lowerLimit]++;
       }
@@ -51,7 +59,10 @@ const GraphStats = ({ simulations, lowerLimit, upperLimit }) => {
     new Chart(ctx, {
       type: "bar",
       data: {
-        labels: Array.from({ length: upperLimit + 1 - lowerLimit }, (_, idx) => idx + lowerLimit),
+        labels: Array.from(
+          { length: upperLimit + 1 - lowerLimit },
+          (_, idx) => idx + lowerLimit
+        ),
         datasets: [
           {
             label: label1,
@@ -70,6 +81,8 @@ const GraphStats = ({ simulations, lowerLimit, upperLimit }) => {
         ],
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
           y: { beginAtZero: true },
         },
@@ -82,7 +95,13 @@ const GraphStats = ({ simulations, lowerLimit, upperLimit }) => {
 
   useEffect(() => {
     // Initialize the combined chart for Trial and Post-Trial Maximum comparison
-    createHistogram(tryingValues, nonTryingValues, "Trial Phase Maximum", "Post-Trial Maximum", comparisonHistogramRef);
+    createHistogram(
+      tryingValues,
+      nonTryingValues,
+      "Trial Phase Maximum",
+      "Post-Trial Maximum",
+      comparisonHistogramRef,
+    );
 
     // Cleanup charts on component unmount or when the data changes
     return () => {
@@ -97,40 +116,62 @@ const GraphStats = ({ simulations, lowerLimit, upperLimit }) => {
 
   return (
     <div className="simulation-stats">
-      <h2>Simulation Results ({simulations.length} runs)</h2>
-<div style={{display:"flex"}}>
-      <div className="stats-grid">
-        <div className="stat-box">
-          <h3>Success Rate</h3>
-          <div className="stat-value">{successRate}%</div>
-          <p>Percentage of times found better partner after trial period</p>
+      
+      <div style={{ display: "flex" }}>
+        <div className="stats-grid" style={{maxWidth:"300px"}}>
+        <h2>Simulation Results ({simulations.length} runs)</h2>
+          <div className="stat-box">
+            <p style={{ fontSize: "20px" }}>
+              {" "}
+              Percentage of times we found a better partner after trying period
+            </p>
+            <div className="stat-value">
+              <h2 style={{ marginTop: "2px", marginBottom: "8px" }}>
+                ={successRate}%
+              </h2>
+            </div>
+          </div>
+
+          <div className="stat-box">
+            <p style={{ fontSize: "20px" }}>
+              Average best compatibility during evaluation phase
+            </p>
+            <div className="stat-value">
+              <h2 style={{ marginTop: "2px", marginBottom: "8px" }}>
+                ={avgTrying}%
+              </h2>
+            </div>
+          </div>
+
+          <div className="stat-box">
+            <p style={{ fontSize: "20px" }}>
+              Average best compatibility found after evaluation phase
+            </p>
+            <div className="stat-value">
+              <h2 style={{ marginTop: "2px", marginBottom: "8px" }}>
+                ={avgNonTrying}%
+              </h2>
+            </div>
+          </div>
+
+          <div className="stat-box">
+            <p style={{ fontSize: "20px" }}>
+              Average improvement when better partner was found
+            </p>
+            <div className="stat-value">
+              <h2 style={{ marginTop: "2px", marginBottom: "8px" }}>
+                ={avgImprovement}%
+              </h2>
+            </div>
+          </div>
         </div>
 
-        <div className="stat-box">
-          <h3>Average Maximum During Trial</h3>
-          <div className="stat-value">{avgTrying}%</div>
-          <p>Average best compatibility during evaluation phase</p>
+        <div className="histograms">
+          <div className="histogram">
+            <h2 style={{fontSize:"20px"}}> Trial vs Post-Trial Maximum Distribution</h2>
+            <canvas  style={{ height: "300px", maxHeight:"300px" }}  ref={comparisonHistogramRef} />
+          </div>
         </div>
-
-        <div className="stat-box">
-          <h3>Average Maximum After Trial</h3>
-          <div className="stat-value">{avgNonTrying}%</div>
-          <p>Average best compatibility found after evaluation phase</p>
-        </div>
-
-        <div className="stat-box">
-          <h3>Average Improvement</h3>
-          <div className="stat-value">{avgImprovement}%</div>
-          <p>Average improvement when better partner was found</p>
-        </div>
-      </div>
-
-      <div style={{ height:"300px"}}className="histograms">
-        <div className="histogram">
-          <h3>Trial vs Post-Trial Maximum Distribution</h3>
-          <canvas ref={comparisonHistogramRef} />
-        </div>
-      </div>
       </div>
     </div>
   );

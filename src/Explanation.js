@@ -144,9 +144,9 @@ const Explanation = ({dateList}) => {
     ))}
 </div>)}
       </div>
-        <div className="carousel-controls" style={{display:"flex",width:"100%", justifyContent:"space-between"}}>
+        <div className="carousel-controls" style={{display:"flex",width:"100%", alignItems:"center",justifyContent:"space-between",textAlign:"center"}}>
           <button onClick={prevItem}>←</button>
-          <p>{listItems[currentIndex]}</p>
+          <p >{listItems[currentIndex]}</p>
           <button onClick={nextItem}>→</button>
         </div>
 

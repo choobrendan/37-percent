@@ -18,9 +18,9 @@ const However = ({ global, setGlobal, type, setType }) => {
     setCurrentDiv(-1);
   };
   return (
-    <div>
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center", width:"750px",height:"350px"}}>
       {currentDiv === 0 && (
-        <div className="div1">
+        <div className="div1"  style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between", width:"750px",height:"350px",}}>
           <p>
             Cool! Let's say there are 10 candidates for you to go on a date
             with.
@@ -49,11 +49,11 @@ const However = ({ global, setGlobal, type, setType }) => {
                 </div>
               ))}
           </div>
-          <div>
-            <button onClick={showNextDiv}>
+          <div style={{ height:"75px", display:"flex"}}>
+            <button style={{width:"300px", height:"100%"}} onClick={showNextDiv}>
               A bit excessive but sure, go on
             </button>
-            <button onClick={showSkip}>
+            <button onClick={showSkip} style={{width:"300px",  height:"100%"}}>
               I know where we're heading, can we just skip to the fun part?{" "}
             </button>
           </div>
@@ -61,7 +61,7 @@ const However = ({ global, setGlobal, type, setType }) => {
       )}
 
       {currentDiv === 1 && (
-        <div className="div2">
+        <div className="div2" style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between", width:"750px",height:"350px"}}>
           <p>We want to try and pick the best choice for us!</p>
           <div
             style={{
@@ -82,7 +82,7 @@ const However = ({ global, setGlobal, type, setType }) => {
       )}
 
       {currentDiv === 2 && (
-        <div className="div3">
+        <div className="div3" style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between", width:"750px", height:"350px"}} >
           <p>
             However, once you went on a date with someone and moved on to the
             next person, you can't go back, even if the last person seemed
@@ -92,6 +92,7 @@ const However = ({ global, setGlobal, type, setType }) => {
             style={{
               display: "flex",
               justifyContent: "space-between",
+              width:"100%"
             }}
           >
             <div
@@ -99,10 +100,11 @@ const However = ({ global, setGlobal, type, setType }) => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "flex-end",
+                marginRight: "50px",
               }}
             >
               <img
-                style={{ width: "150px", height: "150px" }}
+                style={{ width: "100px", height: "100px" }}
                 src={require(`./images/main/main-concerned.png`)}
               />
               <div
@@ -110,11 +112,12 @@ const However = ({ global, setGlobal, type, setType }) => {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
+                 
                 }}
               >
-                <p>53% compatibility</p>
+                <p style={{fontSize:"16px"}}>53% compatibility</p>
                 <img
-                  style={{ width: "150px", height: "150px" }}
+                  style={{ width: "100px", height: "100px" }}
                   src={require(`./images/guy/guy-${rand1}.png`)}
                 />
               </div>
@@ -123,8 +126,8 @@ const However = ({ global, setGlobal, type, setType }) => {
               style={{
                 display: "flex",
                 justifyContent: "center",
-                // alignItems: "flex-end",
-                marginTop: "50px",
+                alignItems: "flex-end",
+                marginRight: "50px",
               }}
             >
               <div
@@ -135,12 +138,12 @@ const However = ({ global, setGlobal, type, setType }) => {
                 }}
               >
                 <img
-                  style={{ width: "80px", height: "80px" }}
+                  style={{ width: "60px", height: "60px", marginBottom:"60px" }}
                   src={require(`./images/guy/guy-${rand1}-throw.png`)}
                 />
               </div>
               <img
-                style={{ width: "150px", height: "150px" }}
+                style={{ width: "100px", height: "100px" }}
                 src={require(`./images/main/main-throwing.png`)}
               />
             </div>
@@ -149,7 +152,8 @@ const However = ({ global, setGlobal, type, setType }) => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "flex-end",
-                position: "relative"
+                position: "relative",
+                
               }}
             >
               <div
@@ -161,11 +165,11 @@ const However = ({ global, setGlobal, type, setType }) => {
               >
                 <img
                   style={{
-                    width: "80px",
-                    height: "80px",
+                    width: "60px",
+                    height: "60px",
                     display: "flex",
                     position: "relative",
-                    bottom: "100px",
+                    bottom: "75px",
                     left:"10px"
                   }}
                   src={require(`./images/guy/guy-${rand1}.png`)}
@@ -174,18 +178,18 @@ const However = ({ global, setGlobal, type, setType }) => {
               <div>
                 <img
                   style={{
-                    width: "120px",
-                    height: "120px",
+                    width: "90px",
+                    height: "90px",
                     display: "flex",
                     position: "absolute",
-                    top: "10px",
-                    left:"-10px"
+                    top: "-20px",
+                    left:"-2px"
                   }}
                   src={require(`./images/others/think.png`)}
                 ></img>
               </div>
               <img
-                style={{ width: "150px", height: "150px" }}
+                style={{ width: "100px", height: "100px", marginRight:"-15px" }}
                 src={require(`./images/main/main-sad.png`)}
               />
               <div
@@ -195,9 +199,9 @@ const However = ({ global, setGlobal, type, setType }) => {
                   alignItems: "center",
                 }}
               >
-                <p>20% compatibility</p>
+                <p  style={{fontSize:"16px"}}> 20% compatibility</p>
                 <img
-                  style={{ width: "150px", height: "150px" }}
+                  style={{ width: "100px", height: "100px" }}
                   src={require(`./images/guy/guy-${rand2}.png`)}
                 />
               </div>
@@ -207,7 +211,7 @@ const However = ({ global, setGlobal, type, setType }) => {
         </div>
       )}
       {currentDiv === 3 && (
-        <div className="div4">
+        <div className="div4" style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between", width:"750px", height:"350px"}} >
           <p>So, what is our strategy to get the optimum date?</p>
           <img
                 // style={{ width: "150px", height: "150px" }}
@@ -217,7 +221,7 @@ const However = ({ global, setGlobal, type, setType }) => {
         </div>
       )}
       {currentDiv === 4 && (
-        <div className="div5">
+        <div className="div5" style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between", width:"750px", height:"350px"}} >
           <p>
             For <a href="https://youtu.be/d6iQrh2TK98?t=808">math reasons</a>{" "}
             I'm too lazy to explain, we should:{" "}
@@ -227,16 +231,25 @@ const However = ({ global, setGlobal, type, setType }) => {
         </div>
       )}
       {currentDiv >= 5 && (
-        <div>
+        <div className="div5" style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between", width:"750px", height:"350px"}}>
           <p>Well, let's look at this visualisation to prove our point!</p>
-          <button onClick={() => setGlobal("init")}>Yay!</button>
+          <img
+            style={{}}
+            src={require(`./images/main/main-happy.png`)}
+            alt="Main Happy"
+          />
+          <button style={{width:"100px"}}onClick={() => setGlobal("init")}>Yay!</button>
         </div>
       )}
       {currentDiv === -1 && (
-        <div>
+        <div className="div5" style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between", width:"750px", height:"350px"}}>
           <p>
             Cool! You've known about this, let's skip to the customisations!
           </p>
+          <img
+            src={require(`./images/main/main-happy.png`)}
+            alt="Main Happy"
+          />
           <button onClick={() => setGlobal("CustomInit")}>Yay!</button>
         </div>
       )}
