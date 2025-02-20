@@ -169,7 +169,7 @@ const GraphStats = ({ simulations, lowerLimit, upperLimit }) => {
         <div className="histograms">
           <div className="histogram">
             <h2 style={{fontSize:"20px"}}> Trial vs Post-Trial Maximum Distribution</h2>
-            <canvas  style={{ height: "300px", maxHeight:"300px" }}  ref={comparisonHistogramRef} />
+            <canvas  style={{ height: "300px", maxHeight:"300px",width: "300px", maxWidth:"300px" }}  ref={comparisonHistogramRef} />
           </div>
         </div>
       </div>
