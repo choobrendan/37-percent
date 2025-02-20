@@ -28,7 +28,11 @@ const Graph = ({ global, setGlobal, type }) => {
 
     return Array.from(uniqueNumbers);
   };
-
+  useEffect(() => {
+if (global==="1"){
+  setCurrentIndex(0)
+}
+  }, [global, type]);
   const getSeq = (type) => {
     if (type !== "both") {
       return Array.from({ length: 10 }, (_, index) => index).sort(

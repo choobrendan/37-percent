@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 
 const Explanation = ({dateList,type}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  console.log(type)
-  console.log(dateList)
+
   const listItems = [
     "Test out the first 37% options. (10*37%≈4)",
     "Reject these options and note the best so far",

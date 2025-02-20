@@ -9,10 +9,7 @@ import { useState, useEffect } from "react";
 function App() {
   const [global, setGlobal] = useState("1");
   const [type, setType] = useState("");
-  useEffect(() => {
-    console.log(type);
-    console.log(global);
-  }, [type, global]);
+
 
   return (
     <div className="App">
