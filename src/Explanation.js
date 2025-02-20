@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
-const Explanation = ({dateList}) => {
+const Explanation = ({dateList,type}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  console.log(type)
+  console.log(dateList)
   const listItems = [
     "Test out the first 37% options. (10*37%≈4)",
     "Reject these options and note the best so far",
@@ -61,6 +62,7 @@ const Explanation = ({dateList}) => {
 >
   {dateList
     .map((index, i) => (
+      
 <div
   key={index}
   style={{
@@ -75,8 +77,8 @@ const Explanation = ({dateList}) => {
 >
         <img
           style={{ height: "100px", width: "100px" }}
-          src={require(`./images/guy/guy-${index}.png`)}
-          alt={`guy-${index}`}
+          src={require(`./images/${type}/${type}-${index}.png`)}
+          alt={`${type}-${index}`}
         />
       </div>
     ))}
@@ -106,8 +108,8 @@ const Explanation = ({dateList}) => {
 >
         <img
           style={{ height: "100px", width: "100px" }}
-          src={require(`./images/guy/guy-${index}.png`)}
-          alt={`guy-${index}`}
+          src={require(`./images/${type}/${type}-${index}.png`)}
+          alt={`${type}-${index}`}
         />
       </div>
     ))}
@@ -137,8 +139,8 @@ const Explanation = ({dateList}) => {
 >
         <img
           style={{ height: "100px", width: "100px" }}
-          src={require(`./images/guy/guy-${index}.png`)}
-          alt={`guy-${index}`}
+          src={require(`./images/${type}/${type}-${index}.png`)}
+          alt={`${type}-${index}`}
         />
       </div>
     ))}

@@ -8,9 +8,23 @@ const However = ({ global, setGlobal, type, setType }) => {
   const rand1 = randomNumber(0, 10, -1);
   const rand2 = randomNumber(0, 10, rand1);
   const [currentDiv, setCurrentDiv] = useState(0);
-  const dateList=Array.from({ length: 10 }, (_, index) => index)
-  .sort(() => Math.random() - 0.5)
-  console.log(dateList)
+
+function setDateList(type){
+  if (type==="both"){
+
+    return Array.from({ length: 20 }, (_, index) => index)
+    .sort(() => Math.random() - 0.5).slice(0,10)
+  }else{
+    return Array.from({ length: 10 }, (_, index) => index)
+    .sort(() => Math.random() - 0.5)
+  }
+  
+}
+  const dateList=setDateList(type)
+
+
+  
+
   const showNextDiv = () => {
     setCurrentDiv(currentDiv + 1);
   };
@@ -34,8 +48,7 @@ const However = ({ global, setGlobal, type, setType }) => {
               justifyContent: "center",
             }}
           >
-            {Array.from({ length: 10 }, (_, index) => index)
-              .sort(() => Math.random() - 0.5)
+            {dateList
               .map((index) => (
                 <div
                   key={index}
@@ -43,8 +56,8 @@ const However = ({ global, setGlobal, type, setType }) => {
                 >
                   <img
                     style={{ height: "100px", width: "100px" }}
-                    src={require(`./images/guy/guy-${index}.png`)}
-                    alt={`guy-${index}`}
+                    src={require(`./images/${type}/${type}-${index}.png`)}
+                    alt={`${type}-${index}`}
                   />
                 </div>
               ))}
@@ -118,7 +131,7 @@ const However = ({ global, setGlobal, type, setType }) => {
                 <p style={{fontSize:"16px"}}>53% compatibility</p>
                 <img
                   style={{ width: "100px", height: "100px" }}
-                  src={require(`./images/guy/guy-${rand1}.png`)}
+                  src={require(`./images/${type}/${type}-${rand1}.png`)}
                 />
               </div>
             </div>
@@ -139,7 +152,7 @@ const However = ({ global, setGlobal, type, setType }) => {
               >
                 <img
                   style={{ width: "60px", height: "60px", marginBottom:"60px" }}
-                  src={require(`./images/guy/guy-${rand1}-throw.png`)}
+                  src={require(`./images/${type}/${type}-${rand1}-throw.png`)}
                 />
               </div>
               <img
@@ -172,7 +185,7 @@ const However = ({ global, setGlobal, type, setType }) => {
                     bottom: "75px",
                     left:"10px"
                   }}
-                  src={require(`./images/guy/guy-${rand1}.png`)}
+                  src={require(`./images/${type}/${type}-${rand1}.png`)}
                 />
               </div>
               <div>
@@ -202,7 +215,7 @@ const However = ({ global, setGlobal, type, setType }) => {
                 <p  style={{fontSize:"16px"}}> 20% compatibility</p>
                 <img
                   style={{ width: "100px", height: "100px" }}
-                  src={require(`./images/guy/guy-${rand2}.png`)}
+                  src={require(`./images/${type}/${type}-${rand2}.png`)}
                 />
               </div>
             </div>
@@ -226,7 +239,7 @@ const However = ({ global, setGlobal, type, setType }) => {
             For <a href="https://youtu.be/d6iQrh2TK98?t=808">math reasons</a>{" "}
             I'm too lazy to explain, we should:{" "}
           </p>
-          <Explanation dateList={dateList}></Explanation>
+          <Explanation type={type} dateList={dateList}></Explanation>
           <button onClick={showNextDiv}>Does it always work?</button>
         </div>
       )}

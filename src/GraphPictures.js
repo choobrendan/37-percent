@@ -1,9 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-const GraphPictures = ({ currentIndex, rand, dates, showBars }) => {
-  console.log(showBars);
-  console.log(Math.max(...dates.slice(0, 4)));
-  console.log(Math.max(...dates.slice(5)));
+const GraphPictures = ({ currentIndex, rand, dates, showBars,type }) => {
       // Calculate the highest value in the first "trying" elements (if visible)
       const tryingValues = dates.slice(0, 4);
       const maxTryingValue = Math.max(...tryingValues);
@@ -69,8 +66,8 @@ const GraphPictures = ({ currentIndex, rand, dates, showBars }) => {
                   transformStyle: "preserve-3d",
                   opacity: `${1 - index * 0.2}`,
                 }}
-                src={require(`./images/guy/guy-${rand.current[index]}.png`)}
-                alt={`Guy ${index}`}
+                src={require(`./images/${type}/${type}-${rand.current[index]}.png`)}
+                alt={`${type} ${index}`}
               />
             ))}
           </div>
@@ -89,8 +86,8 @@ const GraphPictures = ({ currentIndex, rand, dates, showBars }) => {
           <div>
             <img
               style={{ width: "70px", height: "70px" }}
-              src={require(`./images/guy/guy-${rand.current[0]}-throw.png`)}
-              alt={`Guy ${1} Throwing`}
+              src={require(`./images/${type}/${type}-${rand.current[0]}-throw.png`)}
+              alt={`${type} ${1} Throwing`}
             />
           </div>
           <img
@@ -120,8 +117,8 @@ const GraphPictures = ({ currentIndex, rand, dates, showBars }) => {
                   transformStyle: "preserve-3d",
                   opacity: `${1 - index * 0.2}`,
                 }}
-                src={require(`./images/guy/guy-${rand.current[index + 1]}.png`)}
-                alt={`Guy ${index}`}
+                src={require(`./images/${type}/${type}-${rand.current[index + 1]}.png`)}
+                alt={`${type} ${index}`}
               />
             ))}
           </div>
@@ -164,8 +161,8 @@ const GraphPictures = ({ currentIndex, rand, dates, showBars }) => {
                   transformStyle: "preserve-3d",
                   opacity: `${1 - index * 0.2}`,
                 }}
-                src={require(`./images/guy/guy-${rand.current[index + 1]}.png`)}
-                alt={`Guy ${index}`}
+                src={require(`./images/${type}/${type}-${rand.current[index + 1]}.png`)}
+                alt={`${type} ${index}`}
               />
             ))}
           </div>
@@ -183,8 +180,8 @@ const GraphPictures = ({ currentIndex, rand, dates, showBars }) => {
           <div>
             <img
               style={{ width: "70px", height: "70px" }}
-              src={require(`./images/guy/guy-${rand.current[1]}-throw.png`)}
-              alt={`Guy ${1} Throwing`}
+              src={require(`./images/${type}/${type}-${rand.current[1]}-throw.png`)}
+              alt={`${type} ${1} Throwing`}
             />
           </div>
           <img
@@ -214,8 +211,8 @@ const GraphPictures = ({ currentIndex, rand, dates, showBars }) => {
                   transformStyle: "preserve-3d",
                   opacity: `${1 - index * 0.2}`,
                 }}
-                src={require(`./images/guy/guy-${rand.current[index + 2]}.png`)}
-                alt={`Guy ${index}`}
+                src={require(`./images/${type}/${type}-${rand.current[index + 2]}.png`)}
+                alt={`${type} ${index}`}
               />
             ))}
           </div>
@@ -233,8 +230,8 @@ const GraphPictures = ({ currentIndex, rand, dates, showBars }) => {
           <div>
             <img
               style={{ width: "70px", height: "70px" }}
-              src={require(`./images/guy/guy-${rand.current[2]}-throw.png`)}
-              alt={`Guy ${1} Throwing`}
+              src={require(`./images/${type}/${type}-${rand.current[2]}-throw.png`)}
+              alt={`${type} ${1} Throwing`}
             />
           </div>
           <img
@@ -264,8 +261,8 @@ const GraphPictures = ({ currentIndex, rand, dates, showBars }) => {
                   transformStyle: "preserve-3d",
                   opacity: `${1 - index * 0.2}`,
                 }}
-                src={require(`./images/guy/guy-${rand.current[index + 3]}.png`)}
-                alt={`Guy ${index}`}
+                src={require(`./images/${type}/${type}-${rand.current[index + 3]}.png`)}
+                alt={`${type} ${index}`}
               />
             ))}
           </div>
@@ -274,7 +271,7 @@ const GraphPictures = ({ currentIndex, rand, dates, showBars }) => {
       {currentIndex === 5 && (
         <div>
           <img
-            src={require(`./images/guy/guy-${
+            src={require(`./images/${type}/${type}-${
               rand.current[dates.indexOf(Math.max(...dates.slice(0, 4)))]
             }.png`)}
           ></img>
@@ -315,10 +312,10 @@ const GraphPictures = ({ currentIndex, rand, dates, showBars }) => {
           <div>
             <img
               style={{ width: "70px", height: "70px" }}
-              src={require(`./images/guy/guy-${
+              src={require(`./images/${type}/${type}-${
                 rand.current[currentIndex - 3]
               }-throw.png`)}
-              alt={`Guy ${1} Throwing`}
+              alt={`${type} ${1} Throwing`}
             />
           </div>
           <img
@@ -348,10 +345,10 @@ const GraphPictures = ({ currentIndex, rand, dates, showBars }) => {
                   transformStyle: "preserve-3d",
                   opacity: `${1 - index * 0.2}`,
                 }}
-                src={require(`./images/guy/guy-${
+                src={require(`./images/${type}/${type}-${
                   rand.current[index + currentIndex - 2]
                 }.png`)}
-                alt={`Guy ${index}`}
+                alt={`${type} ${index}`}
               />
             ))}
           </div>
@@ -406,7 +403,7 @@ const GraphPictures = ({ currentIndex, rand, dates, showBars }) => {
           >
           <img
             style={{ width: "150px", height: "150px" }}
-            src={require(`./images/guy/guy-${rand.current[currentIndex-2]}.png`)}
+            src={require(`./images/${type}/${type}-${rand.current[currentIndex-2]}.png`)}
             alt="Main Happy"
           />
           </div>

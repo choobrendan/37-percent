@@ -5,7 +5,7 @@ import GraphNew from "./GraphNew.js";
 import GraphStats from "./GraphStats.js";
 import GraphPictures from "./GraphPictures.js";
 
-const Graph = ({ global, setGlobal }) => {
+const Graph = ({ global, setGlobal, type }) => {
   const [showBars, setShowBars] = useState({ bars: 0, skipped: false });
   const [count, setCount] = useState(10);
   const [trying, setTrying] = useState(Math.ceil(count * 0.37));
@@ -17,32 +17,53 @@ const Graph = ({ global, setGlobal }) => {
   const [simulationResults, setSimulationResults] = useState([]);
   const [isToggled, setIsToggled] = useState(false);
   const [times, setTimes] = useState(100);
+
   const getRandomDates = (count, lowerLimit, upperLimit) => {
     const uniqueNumbers = new Set();
-  
+
     while (uniqueNumbers.size < count) {
       const randomNumber = Math.floor(Math.random() * (upperLimit - lowerLimit) + lowerLimit);
       uniqueNumbers.add(randomNumber);
     }
-  
+
     return Array.from(uniqueNumbers);
   };
 
-  const getSeq = () =>
-    Array.from({ length: 10 }, (_, index) => index).sort(
-      () => Math.random() - 0.5
-    );
-  let rand = useRef(getSeq());
-  console.log(rand);
+  const getSeq = (type) => {
+    if (type !== "both") {
+      return Array.from({ length: 10 }, (_, index) => index).sort(
+        () => Math.random() - 0.5
+      );
+    } else {
+      const allNumbers = Array.from({ length: 20 }, (_, i) => i);
+
+      for (let i = allNumbers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [allNumbers[i], allNumbers[j]] = [allNumbers[j], allNumbers[i]];
+      }
+      return allNumbers.slice(0, 10);
+    }
+  };
+
+  // Initialize rand with useRef
+  let rand = useRef(getSeq(type));
+console.log(rand)
+  // Update rand.current whenever type changes
+  useEffect(() => {
+    rand.current = getSeq(type);
+    console.log(rand.current, "RAND updated");
+  }, [type]);
+
   // Using useRef to store the dates array
   let dates = useRef(getRandomDates(count, lowerLimit, upperLimit));
-  console.log(dates)
+  console.log(dates);
+
   const reset = () => {
     dates.current = getRandomDates(count, lowerLimit, upperLimit);
-
     setCurrentIndex(0);
     setShowBars({ bars: 0, skipped: false });
   };
+
   const changeCustom = () => {
     setGlobal("CustomInit");
     dates.current = getRandomDates(count, lowerLimit, upperLimit);
@@ -50,6 +71,7 @@ const Graph = ({ global, setGlobal }) => {
     setShowBars({ bars: 0, skipped: false });
     setListItemCount(0);
   };
+
   const changeShow = () => {
     setGlobal("show");
     dates.current = getRandomDates(count, lowerLimit, upperLimit);
@@ -57,6 +79,7 @@ const Graph = ({ global, setGlobal }) => {
     setShowBars({ bars: dates.current.length, skipped: false });
     setListItemCount(0);
   };
+
   const changeStats = () => {
     setGlobal("Stats");
     dates.current = getRandomDates(count, lowerLimit, upperLimit);
@@ -64,12 +87,15 @@ const Graph = ({ global, setGlobal }) => {
     setShowBars({ bars: dates.current.length, skipped: false });
     setListItemCount(0);
   };
+
   const handleGraphNewRefreshComplete = () => {
     setIsGraphNewReady(true);
   };
+
   const handleGraphNewLoadComplete = () => {
     setIsGraphNewReady(false);
   };
+
   const runSimulations = () => {
     const results = [];
 
@@ -91,10 +117,9 @@ const Graph = ({ global, setGlobal }) => {
     console.log(results);
     setSimulationResults(results);
   };
+
   console.log(global);
 
-  // Call this when the "Let's do it!" button is clicked
-  // (modify your changeShow function accordingly)
   return (
     <div>
       {(global === "CustomInit" || global === "show" || global === "Stats") && (
@@ -121,26 +146,34 @@ const Graph = ({ global, setGlobal }) => {
           setIsGraphNewReady={setIsGraphNewReady}
         ></GraphInit>
       )}
-      <div style={{display:"flex",alignItems: "flex-end"}}>
-      {isGraphNewReady && global !== "CustomInit" && global !== "Stats" && (
-        <GraphVisuals
-          count={count}
-          trying={trying}
-          dates={dates.current}
-          showBars={showBars}
-          setShowBars={setShowBars}
-          currentIndex={currentIndex}
-          listItemCount={listItemCount}
-          setListItemCount={setListItemCount}
-          global={global}
-          setGlobal={setGlobal}
-          lowerLimit={lowerLimit}
-          setLowerLimit={setLowerLimit}
-          upperLimit={upperLimit}
-          setUpperLimit={setUpperLimit}
-        />
-      )}
-      {isGraphNewReady && global === "init" &&(<GraphPictures currentIndex={currentIndex} rand={rand} dates={dates.current} showBars={showBars} />)}
+      <div style={{ display: "flex", alignItems: "flex-end" }}>
+        {isGraphNewReady && global !== "CustomInit" && global !== "Stats" && (
+          <GraphVisuals
+            count={count}
+            trying={trying}
+            dates={dates.current}
+            showBars={showBars}
+            setShowBars={setShowBars}
+            currentIndex={currentIndex}
+            listItemCount={listItemCount}
+            setListItemCount={setListItemCount}
+            global={global}
+            setGlobal={setGlobal}
+            lowerLimit={lowerLimit}
+            setLowerLimit={setLowerLimit}
+            upperLimit={upperLimit}
+            setUpperLimit={setUpperLimit}
+          />
+        )}
+        {isGraphNewReady && global === "init" && (
+          <GraphPictures
+            currentIndex={currentIndex}
+            rand={rand}
+            dates={dates.current}
+            showBars={showBars}
+            type={type}
+          />
+        )}
       </div>
       {global === "init" && (
         <GraphNew
