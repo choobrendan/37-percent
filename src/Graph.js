@@ -147,7 +147,7 @@ console.log(rand)
         ></GraphInit>
       )}
       <div style={{ display: "flex", alignItems: "flex-end" }}>
-        {isGraphNewReady && global !== "CustomInit" && global !== "Stats" && (
+        {isGraphNewReady && global !== "CustomInit" && global !== "Stats" && global!=="1" && global!=="2" && (
           <GraphVisuals
             count={count}
             trying={trying}

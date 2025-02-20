@@ -14,13 +14,28 @@ const GraphVisuals = ({
   setGlobal,
 }) => {
   const chartRef = useRef(null);
-  const chartInstance = useRef(null); // Ref to store the chart instance
+  const chartInstance = useRef(null);
 
   Chart.register(annotationPlugin);
+
   useEffect(() => {
+    // If global is "1", destroy all charts and remove the canvas
+    if (global === "1" && chartInstance.current) {
+      chartInstance.current.destroy();
+      chartInstance.current = null;
+
+      // Clear the canvas or remove the canvas element from the DOM
+      if (chartRef.current) {
+        chartRef.current.remove();  // This will remove the canvas element itself
+      }
+
+      return;
+    }
+
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
+
     let visibleDates = new Array(count);
     visibleDates = [
       ...dates.slice(0, showBars.bars + 1),
@@ -214,8 +229,11 @@ const GraphVisuals = ({
       if (chartInstance.current) {
         chartInstance.current.destroy();
       }
+      if (chartRef.current) {
+        chartRef.current.remove();  // Ensure the canvas is removed when component unmounts
+      }
     };
-  }, [dates, currentIndex]); // Re-run effect when "count", "trying", "dates", or "currentIndex" changes
+  }, [dates, currentIndex, global]); // Re-run effect when "count", "trying", "dates", "currentIndex" or "global" changes
 
   return (
     <div style={{ maxWidth: "500px" }}>
@@ -235,8 +253,7 @@ const GraphVisuals = ({
           {Math.max(...dates.slice(trying)) >=
             Math.max(...dates.slice(0, trying)) && (
             <p>
-              There is a date that we picked immediately, with
-              person{" "}
+              There is a date that we picked immediately, with person{" "}
               {dates
                 .slice(trying)
                 .indexOf(
@@ -249,35 +266,22 @@ const GraphVisuals = ({
                 trying +
                 1}{" "}
               at{" "}
-              {
-                  dates
-                    .slice(trying)
-                    .find(
-                      (value) => value > Math.max(...dates.slice(0, trying))
-                    )
-              }
+              {dates
+                .slice(trying)
+                .find((value) => value > Math.max(...dates.slice(0, trying)))}
               %.
             </p>
           )}
           {Math.max(...dates.slice(trying)) >
             dates
-            .slice(trying)
-            .find(
-              (value) => value > Math.max(...dates.slice(0, trying))
-            ) && (
+              .slice(trying)
+              .find((value) => value > Math.max(...dates.slice(0, trying))) && (
             <p>
-              However, there was a better option at person {" "}
-              {dates
-                .slice(trying)
-                .indexOf(
-                  Math.max(...dates.slice(trying))
-                ) +
+              However, there was a better option at person{" "}
+              {dates.slice(trying).indexOf(Math.max(...dates.slice(trying))) +
                 trying +
                 1}{" "}
-              at{" "}
-              {
-                  Math.max(...dates.slice(trying))
-              }
+              at {Math.max(...dates.slice(trying))}
               %.
             </p>
           )}
